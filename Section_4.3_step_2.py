@@ -19,14 +19,20 @@ def dSc_dt(Sc, P = 100):
     return [(P - canopEvap([n])[0] - canopThro([n])[0] - canopDrain([n])[0]) for n in Sc]
 
 # one day interval
-Sc = [0] # setting the initial value to zero
-t = np.arange(0, 10, 1) # indicating the time steps, so the time step starts at zero, will repeat for 10 days at an interval of 1 day
+dt = 1. # 1 day
+Sc = 0. # setting the initial value to zero
+Sc_vec = [Sc]
+t = np.arange(0, 11, dt) # indicating the time steps, so the time step starts at zero, will repeat for 10 days at an interval of 1 day
 
 for n in t[1:]: # a for loop is utilized to compute each interception storage value for each of the 10 days
-    Sc.append(Sc[n-1] + dSc_dt([n-1])[0] * 1) # the values are added to the empty list
+    netFlux = dSc_dt(Sc)
+    Sc = Sc + netFlux*dt
+    if Sc < 0:
+        Sc=0
+    Sc_vsc.append(Sc)
 
-print(t, Sc)
-plt.plot(t, Sc, color='r')
+print(t, Sc_vec)
+plt.plot(t, Sc_vec, color='r')
 plt.xlabel('Time (days)')
 plt.ylabel('Interception storage (mm/day)')
 plt.title("One Day Interval")
@@ -45,6 +51,7 @@ plt.xlabel('Time (days)')
 plt.ylabel('Interception storage (mm/day)')
 plt.title("One hour Interval")
 plt.show()
+
 
 # 5 min interval
 Sc = [0]
