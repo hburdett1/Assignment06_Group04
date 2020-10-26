@@ -1,21 +1,28 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+# Define parameters
+nonlinear_wf = 2/3
+Sc_max = 3.00        # mm
+Kcan = 0.5           # 1/day
+Ep = 5               # mm/day
+P = 100.0            # mm/day
+
 # equations 8-10 are necessary for equation 1
 # Equation 8
-def canopEvap(Sc, Sc_max = 3.0, nonlinear_wf = 2/3, Ep = 5):
+def canopEvap(Sc, Sc_max, nonlinear_wf, Ep):
     return [(Ep*(n/Sc_max)**nonlinear_wf) if n<Sc_max else (Ep*1) for n in Sc]
 
 # Equation 9
-def canopThro(Sc, SC_max = 3.0, P=100.0):
+def canopThro(Sc, SC_max, P):
     return [(P*n/SC_max) if n<SC_max else P for n in Sc]
 
 # Equation 10
-def canopDrain(Sc, Sc_max = 3.0, kcan = 0.5):
+def canopDrain(Sc, Sc_max, kcan):
     return [0 if n<Sc_max else (kcan*(n-Sc_max)) for n in Sc]
 
 # Equation 1
-def dSc_dt(Sc, P = 100):
+def dSc_dt(Sc, P):
     return [(P - canopEvap([n])[0] - canopThro([n])[0] - canopDrain([n])[0]) for n in Sc]
 
 # one day interval
